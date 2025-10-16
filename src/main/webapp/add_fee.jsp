@@ -10,7 +10,7 @@
         var studentId = document.forms["feeForm"]["student_id"].value;
         var amount = document.forms["feeForm"]["amount"].value;
         if (!studentId || !amount) {
-            alert("All fields are required.");
+            alert("All the fields are required.");
             return false;
         }
         if (isNaN(amount) || parseFloat(amount) <= 0) {
