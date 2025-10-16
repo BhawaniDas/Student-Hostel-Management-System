@@ -4,7 +4,7 @@
 %>
 <html>
 <head>
-    <title>Apply for Leave</title>
+    <title>Apply for Leave for</title>
 </head>
 <body>
     <h2>Apply for Leave</h2>
