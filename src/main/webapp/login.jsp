@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Hostel Management Login</title>
+    <title>Hostel Management System</title>
     <script>
     function toggleLabel() {
         var roleSelect = document.getElementById("role");
