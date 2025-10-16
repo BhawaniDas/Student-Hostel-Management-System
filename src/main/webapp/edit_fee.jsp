@@ -10,7 +10,7 @@
 <head><title>Edit Fee Payment</title></head>
 <body>
     <h2>Edit Fee Payment</h2>
-    <form method="post" action="EditFeeServlet">
+    <form method="post" action="EditFeeServlets">
         <input type="hidden" name="id" value="<%= payment.getId() %>"/>
         Student:
         <select name="student_id" required>
