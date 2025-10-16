@@ -27,7 +27,7 @@ public class AddFeeServlet extends HttpServlet {
             req.getSession().setAttribute("message", "Fee payment added successfully!");
         } catch (Exception e) {
             e.printStackTrace();
-            req.getSession().setAttribute("error", "Error adding fee payment!");
+            req.getSession().setAttribute("error", "Error adding feee payment!");
         }
         resp.sendRedirect("StudentListServlet");
     }
