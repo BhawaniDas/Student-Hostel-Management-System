@@ -10,11 +10,25 @@ import java.io.IOException;
 @WebServlet("/EditStudentServlet")
 public class EditStudentServlet extends HttpServlet {
 
+    // Session check helper method
+    private boolean hasEditPermission(HttpSession session) {
+        if (session == null) return false;
+        String role = (String) session.getAttribute("role");
+        String username = (String) session.getAttribute("username");
+        return username != null && role != null &&
+                (role.equalsIgnoreCase("warden") || role.equalsIgnoreCase("superintendent"));
+    }
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        if (!hasEditPermission(session)) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
         String idStr = request.getParameter("id");
         if (idStr == null) {
-            request.getSession().setAttribute("error", "No student selected for editing.");
+            session.setAttribute("error", "No student selected for editing.");
             response.sendRedirect("StudentListServlet");
             return;
         }
@@ -23,7 +37,7 @@ public class EditStudentServlet extends HttpServlet {
             StudentDAO dao = new StudentDAO();
             Student student = dao.getStudentById(id);
             if (student == null) {
-                request.getSession().setAttribute("error", "Student not found.");
+                session.setAttribute("error", "Student not found.");
                 response.sendRedirect("StudentListServlet");
                 return;
             }
@@ -32,13 +46,18 @@ public class EditStudentServlet extends HttpServlet {
             dispatcher.forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
-            request.getSession().setAttribute("error", "Error loading student for edit.");
+            session.setAttribute("error", "Error loading student for edit.");
             response.sendRedirect("StudentListServlet");
         }
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        if (!hasEditPermission(session)) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
         try {
             int id = Integer.parseInt(request.getParameter("id"));
             String rollNo = request.getParameter("roll_no");
@@ -48,7 +67,7 @@ public class EditStudentServlet extends HttpServlet {
 
             // Validate roll number: must be 6 digits
             if (rollNo == null || !rollNo.matches("\\d{6}")) {
-                request.getSession().setAttribute("error", "Invalid roll number! Must be exactly 6 digits.");
+                session.setAttribute("error", "Invalid roll number! Must be exactly 6 digits.");
                 response.sendRedirect("EditStudentServlet?id=" + id);
                 return;
             }
@@ -64,15 +83,15 @@ public class EditStudentServlet extends HttpServlet {
             boolean updated = dao.updateStudent(student);
 
             if (updated) {
-                request.getSession().setAttribute("message", "Student updated successfully!");
+                session.setAttribute("message", "Student updated successfully!");
                 response.sendRedirect("StudentListServlet");
             } else {
-                request.getSession().setAttribute("error", "Failed to update student.");
+                session.setAttribute("error", "Failed to update student.");
                 response.sendRedirect("EditStudentServlet?id=" + id);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            request.getSession().setAttribute("error", "Failed to update student.");
+            session.setAttribute("error", "Failed to update student.");
             response.sendRedirect("EditStudentServlet?id=" + request.getParameter("id"));
         }
     }

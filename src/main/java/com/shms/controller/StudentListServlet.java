@@ -15,6 +15,18 @@ import java.util.*;
 
 public class StudentListServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // --- Session Access Control ---
+        HttpSession session = req.getSession(false);
+        String role = (session != null) ? (String) session.getAttribute("role") : null;
+        String username = (session != null) ? (String) session.getAttribute("username") : null;
+
+        if (session == null || username == null || role == null ||
+            !(role.equalsIgnoreCase("student") || role.equalsIgnoreCase("warden") || role.equalsIgnoreCase("superintendent"))) {
+            resp.sendRedirect("login.jsp");
+            return;
+        }
+        // --- Session Control End ---
+
         try {
             int pageSize = 10;
             int mypage = 1;

@@ -1,5 +1,6 @@
 package com.shms.controller;
 
+import com.shms.dao.UserDAO;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.WebServlet;
@@ -15,6 +16,13 @@ public class StudentDashboardServlet extends HttpServlet {
             response.sendRedirect("login.jsp");
             return;
         }
+
+        // Fetch student name based on roll number (username)
+        String rollNo = (String) session.getAttribute("username");
+        UserDAO userDao = new UserDAO();
+        String studentName = userDao.getNameByRollNo(rollNo);
+        request.setAttribute("studentName", studentName);
+
         request.getRequestDispatcher("WEB-INF/student_dashboard.jsp").forward(request, response);
     }
 }

@@ -15,24 +15,36 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class AllocateRoomServlet extends HttpServlet {
+    // Helper to check session role
+    private boolean hasRoomAllocationPermission(HttpSession session) {
+        if (session == null) return false;
+        String role = (String) session.getAttribute("role");
+        String username = (String) session.getAttribute("username");
+        return username != null && role != null &&
+                (role.equalsIgnoreCase("warden") || role.equalsIgnoreCase("superintendent"));
+    }
+
     // Show allocation form with students and rooms
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession(false);
+        if (!hasRoomAllocationPermission(session)) {
+            resp.sendRedirect("login.jsp");
+            return;
+        }
         RoomDAO roomDao = new RoomDAO();
         StudentDAO studentDao = new StudentDAO();
         List<Room> rooms = null;
-		try {
-			rooms = roomDao.getAllRooms();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        try {
+            rooms = roomDao.getAllRooms();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         List<Student> students = null;
-		try {
-			students = studentDao.getAllStudents();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        try {
+            students = studentDao.getAllStudents();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         req.setAttribute("rooms", rooms);
         req.setAttribute("students", students);
         req.getRequestDispatcher("allocate_room.jsp").forward(req, resp);
@@ -40,6 +52,11 @@ public class AllocateRoomServlet extends HttpServlet {
 
     // Handle allocation submit
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession(false);
+        if (!hasRoomAllocationPermission(session)) {
+            resp.sendRedirect("login.jsp");
+            return;
+        }
         int roomId = Integer.parseInt(req.getParameter("room_id"));
         int studentId = Integer.parseInt(req.getParameter("student_id"));
         String dateFromStr = req.getParameter("date_from");
@@ -53,9 +70,9 @@ public class AllocateRoomServlet extends HttpServlet {
             alloc.setDateTo(sdf.parse(dateToStr));
             RoomAllocationDAO dao = new RoomAllocationDAO();
             dao.allocateRoom(alloc);
-            req.getSession().setAttribute("message", "Room allocated successfully!");
+            session.setAttribute("message", "Room allocated successfully!");
         } catch (Exception e) {
-            req.getSession().setAttribute("error", "Failed to allocate room!");
+            session.setAttribute("error", "Failed to allocate room!");
         }
         resp.sendRedirect("RoomListServlet");
     }

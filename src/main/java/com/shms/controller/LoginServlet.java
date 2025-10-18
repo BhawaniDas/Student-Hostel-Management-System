@@ -19,15 +19,18 @@ public class LoginServlet extends HttpServlet {
         String role = request.getParameter("role"); // Get role from login form
 
         UserDAO userDao = new UserDAO();
-        // Pass all three: username, password, and role!
+        // Validate user by username, password, role
         User user = userDao.validateUser(username, password, role);
 
         if (user != null) {
             HttpSession session = request.getSession();
             session.setAttribute("currentUser", user);
-            session.setAttribute("role", user.getRole()); // Store role for later
+            session.setAttribute("username", user.getUsername()); // student's rollNo or warden's username
+            session.setAttribute("role", user.getRole().toLowerCase().trim()); // store normalized role
 
-            switch (user.getRole()) {
+            // Optional: set more info, e.g. session.setAttribute("name", user.getName());
+
+            switch (user.getRole().toLowerCase().trim()) {
                 case "admin":
                     response.sendRedirect("AdminDashboardServlet");
                     break;
@@ -35,15 +38,21 @@ public class LoginServlet extends HttpServlet {
                     response.sendRedirect("SuperintendentDashboardServlet");
                     break;
                 case "warden":
+                    // For warden-specific dashboards
+                    // username can be warden login or ID as needed
                     response.sendRedirect("WardenDashboardServlet");
                     break;
                 case "student":
+                    // For students, username is rollNo
                     response.sendRedirect("StudentDashboardServlet");
                     break;
                 default:
+                    // Invalid role after authentication
+                    session.invalidate();
                     response.sendRedirect("login.jsp?error=Invalid+role");
             }
         } else {
+            // Failed login
             response.sendRedirect("login.jsp?error=Invalid+username+or+password+or+role");
         }
     }

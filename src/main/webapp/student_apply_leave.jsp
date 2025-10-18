@@ -1,24 +1,20 @@
-<%@ page import="com.shms.model.FeePayment, com.shms.model.Student, java.util.List" %>
+<%@ page session="true" %>
 <%
     String sessionRole = (String) session.getAttribute("role");
     if (session.getAttribute("username") == null || sessionRole == null
-        || !(sessionRole.equalsIgnoreCase("superintendent") || sessionRole.equalsIgnoreCase("warden"))) {
+        || !sessionRole.equalsIgnoreCase("student")) {
         response.sendRedirect("login.jsp");
         return;
     }
     
-    FeePayment payment = (FeePayment) request.getAttribute("payment");
-    List<Student> students = (List<Student>) request.getAttribute("students");
-    if (payment == null) {
+    String rollNo = (String) session.getAttribute("username");
 %>
-    <p>Payment not found!</p>
-<% return; } %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Fee Payment - Hostel Management System</title>
+    <title>Apply Leave - Hostel Management System</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -97,15 +93,15 @@
             box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
         }
         
-        .form-select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
-        }
-        
         .form-label {
             font-weight: 500;
             color: #495057;
             margin-bottom: 0.5rem;
+        }
+        
+        .readonly-field {
+            background-color: #f8f9fa;
+            opacity: 1;
         }
         
         @media (max-width: 768px) {
@@ -126,71 +122,65 @@
             <div class="row align-items-center">
                 <div class="col-md-8">
                     <h1 class="h3 mb-1"><i class="fas fa-building me-2"></i>Hostel Management System</h1>
-                    <p class="mb-0">Edit Fee Payment</p>
+                    <p class="mb-0">Apply for Leave</p>
                 </div>
                 <div class="col-md-4 text-end">
-                    <span class="me-3">Welcome, 
-                        <% if ("warden".equalsIgnoreCase(sessionRole)) { %>
-                            Warden!
-                        <% } else if ("superintendent".equalsIgnoreCase(sessionRole)) { %>
-                            Superintendent!
-                        <% } %>
-                    </span>
+                    <span class="me-3">Welcome, Student!</span>
                 </div>
             </div>
         </div>
 
         <!-- Back Button -->
         <div class="mb-3">
-            <a href="FeeListServlet" class="btn btn-outline-custom">
-                <i class="fas fa-arrow-left me-1"></i> Back to Fee List
+            <a href="StudentDashboardServlet" class="btn btn-outline-custom">
+                <i class="fas fa-arrow-left me-1"></i> Back to Student Dashboard
             </a>
         </div>
 
-        <!-- Edit Form Card -->
+        <!-- Apply Leave Form Card -->
         <div class="content-card">
-            <h3 class="mb-4 text-center"><i class="fas fa-edit me-2"></i>Edit Fee Payment</h3>
+            <h3 class="mb-4 text-center"><i class="fas fa-calendar-plus me-2"></i>Apply for Leave</h3>
             
-            <form method="post" action="EditFeeServlet">
-                <input type="hidden" name="id" value="<%= payment.getId() %>"/>
-                
+            <form method="post" action="StudentLeaveApplyServlet">
                 <div class="mb-3">
-                    <label class="form-label">Student</label>
-                    <select name="student_id" class="form-select" required>
-                        <option value="">Select Student</option>
-                        <% for (Student s : students) { %>
-                            <option value="<%= s.getId() %>" <%= s.getId() == payment.getStudentId() ? "selected" : "" %>>
-                                <%= s.getName() %> (<%= s.getRollNo() %>)
-                            </option>
-                        <% } %>
-                    </select>
+                    <label class="form-label">Roll No</label>
+                    <input type="text" name="roll_no" class="form-control readonly-field" 
+                           value="<%=rollNo%>" readonly />
                 </div>
                 
                 <div class="mb-3">
-                    <label class="form-label">Amount</label>
-                    <input type="number" name="amount" class="form-control" step="0.01" min="0.01" 
-                           value="<%= String.format("%.0f", payment.getAmount()) %>" required/>
+                    <label class="form-label">From Date</label>
+                    <input type="date" name="from_date" class="form-control" required />
                 </div>
                 
                 <div class="mb-3">
-                    <label class="form-label">Payment Date</label>
-                    <input type="date" name="payment_date" class="form-control" 
-                           value="<%= payment.getPaymentDate() %>" required/>
+                    <label class="form-label">To Date</label>
+                    <input type="date" name="to_date" class="form-control" required />
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Reason</label>
+                    <input type="text" name="reason" class="form-control" 
+                           placeholder="Enter reason for leave" required maxlength="255" />
                 </div>
                 
                 <div class="mb-4">
-                    <label class="form-label">Fee Status</label>
-                    <select name="fee_status" class="form-select">
-                        <option value="Paid" <%= "Paid".equals(payment.getFeeStatus()) ? "selected" : "" %>>Paid</option>
-                        <option value="Pending" <%= "Pending".equals(payment.getFeeStatus()) ? "selected" : "" %>>Pending</option>
-                    </select>
+                    <label class="form-label">Guardian Number</label>
+                    <input type="text" name="guardian_number" class="form-control" 
+                           placeholder="Enter guardian's contact number" required maxlength="10" />
                 </div>
                 
                 <div class="d-grid gap-2">
                     <button type="submit" class="btn btn-custom btn-lg">
-                        <i class="fas fa-save me-2"></i>Update Payment
+                        <i class="fas fa-paper-plane me-2"></i>Submit Application
                     </button>
                 </div>
+                
+                <% if(request.getParameter("error") != null) { %>
+                    <div class="alert alert-danger mt-3" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i> All fields are required.
+                    </div>
+                <% } %>
             </form>
         </div>
     </div>

@@ -8,6 +8,19 @@ import java.util.List;
 
 public class RoomListServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // ---- SESSION AND ROLE CHECK START ----
+        HttpSession session = req.getSession(false);
+        String role = (session != null) ? (String) session.getAttribute("role") : null;
+
+        // Only allow superintendent and warden
+        if (session == null || session.getAttribute("username") == null
+                || role == null
+                || !(role.equalsIgnoreCase("superintendent") || role.equalsIgnoreCase("warden"))) {
+            resp.sendRedirect("login.jsp");
+            return;
+        }
+        // ---- SESSION AND ROLE CHECK END ----
+
         try {
             RoomDAO dao = new RoomDAO();
             List<Room> rooms = dao.getAllRooms();

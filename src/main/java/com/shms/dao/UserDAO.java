@@ -93,6 +93,27 @@ public class UserDAO {
         return user;
     }
 
+    // Get user name using roll number (username)
+    public String getNameByRollNo(String rollNo) {
+        String name = "";
+        try {
+            Connection con = JDBCUtils.getConnection();
+            String sql = "SELECT name FROM user WHERE username = ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, rollNo);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                name = rs.getString("name");
+            }
+            rs.close();
+            ps.close();
+            con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return name;
+    }
+
     // Update user (for admin edit)
     public void updateUser(User updatedUser) throws SQLException {
         String sql = "UPDATE user SET password=?, role=?, email=?, name=?, contact=?, address=? WHERE username=?";
@@ -139,6 +160,7 @@ public class UserDAO {
         return userId;
     }
 
+    // Delete user by username
     public void deleteUser(String username) throws SQLException {
         String sql = "DELETE FROM user WHERE username = ?";
         try (Connection con = JDBCUtils.getConnection();

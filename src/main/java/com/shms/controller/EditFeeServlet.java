@@ -10,25 +10,43 @@ import javax.servlet.http.*;
 import java.io.IOException;
 
 public class EditFeeServlet extends HttpServlet {
+
+    private boolean hasEditFeePermission(HttpSession session) {
+        if (session == null) return false;
+        String role = (String) session.getAttribute("role");
+        String username = (String) session.getAttribute("username");
+        return username != null && role != null &&
+                (role.equalsIgnoreCase("warden") || role.equalsIgnoreCase("superintendent"));
+    }
+
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession(false);
+        if (!hasEditFeePermission(session)) {
+            resp.sendRedirect("login.jsp");
+            return;
+        }
         try {
             int id = Integer.parseInt(req.getParameter("id"));
             FeePaymentDAO dao = new FeePaymentDAO();
             FeePayment payment = dao.getPaymentById(id);
 
-            // Get all students for dropdown
             List<Student> students = new StudentDAO().getAllStudents();
             req.setAttribute("students", students);
-
             req.setAttribute("payment", payment);
+
             req.getRequestDispatcher("edit_fee.jsp").forward(req, resp);
         } catch (Exception e) {
-            req.getSession().setAttribute("error", "Error loading payment for edit: " + e.getMessage());
+            session.setAttribute("error", "Error loading payment for edit: " + e.getMessage());
             resp.sendRedirect("FeeListServlet");
         }
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession(false);
+        if (!hasEditFeePermission(session)) {
+            resp.sendRedirect("login.jsp");
+            return;
+        }
         try {
             int id = Integer.parseInt(req.getParameter("id"));
             int studentId = Integer.parseInt(req.getParameter("student_id"));
@@ -47,9 +65,9 @@ public class EditFeeServlet extends HttpServlet {
             FeePaymentDAO dao = new FeePaymentDAO();
             dao.updatePayment(payment);
 
-            req.getSession().setAttribute("message", "Fee payment updated successfully!");
+            session.setAttribute("message", "Fee payment updated successfully!");
         } catch (Exception e) {
-            req.getSession().setAttribute("error", "Error updating payment: " + e.getMessage());
+            session.setAttribute("error", "Error updating payment: " + e.getMessage());
         }
         resp.sendRedirect("FeeListServlet");
     }

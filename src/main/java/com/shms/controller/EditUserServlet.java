@@ -10,7 +10,20 @@ import java.sql.SQLException;
 
 @WebServlet("/EditUserServlet")
 public class EditUserServlet extends HttpServlet {
+
+    private boolean isAdmin(HttpSession session) {
+        if (session == null) return false;
+        String role = (String) session.getAttribute("role");
+        String username = (String) session.getAttribute("username");
+        return username != null && role != null && role.equalsIgnoreCase("admin");
+    }
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        if (!isAdmin(session)) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
         String username = request.getParameter("username");
         UserDAO dao = new UserDAO();
         User user = dao.getUserByUsername(username);
@@ -20,6 +33,11 @@ public class EditUserServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        if (!isAdmin(session)) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String email = request.getParameter("email");
@@ -39,11 +57,10 @@ public class EditUserServlet extends HttpServlet {
 
         UserDAO dao = new UserDAO();
         try {
-			dao.updateUser(user);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+            dao.updateUser(user);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         response.sendRedirect("AdminDashboardServlet");
     }
 }

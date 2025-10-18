@@ -1,2 +1,6 @@
 eclipse.preferences.version=1
 encoding//src/main/java=UTF-8
+encoding//src/main/webapp/fee_list.jsp=UTF-8
+encoding//src/main/webapp/list_students.jsp=UTF-8
+encoding//src/main/webapp/login.jsp=UTF-8
+encoding//src/main/webapp/student_view_leave.jsp=UTF-8
