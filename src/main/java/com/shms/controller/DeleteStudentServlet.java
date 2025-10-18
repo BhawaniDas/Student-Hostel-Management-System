@@ -26,7 +26,7 @@ public class DeleteStudentServlet extends HttpServlet {
                 if (deleted) {
                     request.getSession().setAttribute("message", "Student deleted successfully!");
                 } else {
-                    request.getSession().setAttribute("error", "Failed to delete student!");
+                    request.getSession().setAttribute("error", "Failed to delete student!!");
                 }
             } catch (Exception e) {
                 e.printStackTrace();

@@ -13,7 +13,7 @@ public class UpdateFeeStatusServlet extends HttpServlet {
         boolean updated = new StudentDAO().updateFeeStatus(studentId, feeStatus);
 
         if (updated) {
-            req.getSession().setAttribute("message", "Fee status updated successfully!");
+            req.getSession().setAttribute("message", "Fee status updated successfully!!");
         } else {
             req.getSession().setAttribute("error", "Failed to update fee status.");
         }

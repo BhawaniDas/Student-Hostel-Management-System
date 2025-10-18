@@ -12,7 +12,7 @@ public class DeleteFeeServlet extends HttpServlet {
             int id = Integer.parseInt(req.getParameter("id"));
             FeePaymentDAO dao = new FeePaymentDAO();
             dao.deletePayment(id);
-            req.getSession().setAttribute("message", "Fee payment deleted successfully!");
+            req.getSession().setAttribute("message", "Fee payment deleted successfully!!");
         } catch (Exception e) {
             req.getSession().setAttribute("error", "Could not delete payment: " + e.getMessage());
         }

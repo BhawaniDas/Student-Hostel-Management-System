@@ -9,7 +9,7 @@ public class Student {
     private String feeStatus;
     private double totalFeePaid;
 
-    // Updated constructor - initializes all fields used in your project
+    // Updated constructor - initializes all fields used in your projectt
     public Student(int id, String rollNo, String name, String contact, String address, double totalFeePaid, String feeStatus) {
         this.id = id;
         this.rollNo = rollNo;
