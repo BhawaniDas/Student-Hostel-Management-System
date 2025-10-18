@@ -8,7 +8,7 @@ import java.util.*;
 public class LeaveApplicationDAO {
 
     private Connection getConnection() throws SQLException {
-        // Use your DBConnection utility
+        // Use your DBConnection utilitys
         // Example: return DBConnection.getConnection();
         return DriverManager.getConnection("jdbc:mysql://localhost:3306/shmsdb", "root", "chinmayadas");
     }

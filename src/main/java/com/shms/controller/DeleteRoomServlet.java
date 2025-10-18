@@ -11,7 +11,7 @@ public class DeleteRoomServlet extends HttpServlet {
             int id = Integer.parseInt(req.getParameter("id"));
             RoomDAO dao = new RoomDAO();
             dao.deleteRoom(id);
-            req.getSession().setAttribute("message", "Room deleted!");
+            req.getSession().setAttribute("message", "Room deleted!!");
         } catch (Exception e) {
             req.getSession().setAttribute("error", "Delete failed!");
         }

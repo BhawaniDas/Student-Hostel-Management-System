@@ -22,7 +22,7 @@ public class StudentDAO {
         }
     }
 
-    // Update (edit) existing student details (no user_id)
+    // Update (edit) existing student details (no user_ids)
     public boolean updateStudent(Student student) {
         int rows = 0;
         String sql = "UPDATE student SET roll_no=?, name=?, contact=?, address=?, fee_status=? WHERE id=?";

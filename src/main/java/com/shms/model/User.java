@@ -10,7 +10,7 @@ public class User {
     private String contact;
     private String address;
 
-    // Constructors
+    // Constructor
     public User() {}
 
     public User(int id, String username, String password, String role, String email, String name, String contact, String address) {
