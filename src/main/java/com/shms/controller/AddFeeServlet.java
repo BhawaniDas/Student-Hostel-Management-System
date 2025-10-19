@@ -18,7 +18,7 @@ public class AddFeeServlet extends HttpServlet {
             FeePayment fee = new FeePayment();
             fee.setStudentId(studentId);
             fee.setAmount(amount);
-            // Use java.sql.Date for database compatibility (today's date)
+            // Use java.sql.Date for database compatibility (today's date).
             java.sql.Date paymentDate = new java.sql.Date(System.currentTimeMillis());
             fee.setPaymentDate(paymentDate);
             fee.setFeeStatus(feeStatus);

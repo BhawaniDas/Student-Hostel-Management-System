@@ -5,7 +5,7 @@ import com.shms.model.Room;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.IOException;
-
+//room servlet
 public class AddRoomServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {

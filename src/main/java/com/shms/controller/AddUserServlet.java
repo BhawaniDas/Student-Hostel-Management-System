@@ -33,7 +33,7 @@ public class AddUserServlet extends HttpServlet {
         try {
 			dao.insertUser(user);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			// TODO Auto-generated catch blocks
 			e.printStackTrace();
 		}
         response.sendRedirect("AdminDashboardServlet");

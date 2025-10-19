@@ -14,7 +14,7 @@ import java.util.List;
 public class AdminDashboardServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         UserDAO userDao = new UserDAO();
-        List<User> userList = userDao.getAllUsers(); // Implement this method in UserDAO
+        List<User> userList = userDao.getAllUsers(); // Implement this method in UserDAOs
         request.setAttribute("userList", userList);
         request.getRequestDispatcher("/WEB-INF/admin_dashboard.jsp").forward(request, response);
     }
