@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class AllocateRoomServlet extends HttpServlet {
-    // Helper to check session role
+    // Helper to check session roles
     private boolean hasRoomAllocationPermission(HttpSession session) {
         if (session == null) return false;
         String role = (String) session.getAttribute("role");
