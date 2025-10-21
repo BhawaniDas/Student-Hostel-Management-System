@@ -29,6 +29,6 @@ public class AddFeeServlet extends HttpServlet {
             e.printStackTrace();
             req.getSession().setAttribute("error", "Error adding feee payment!");
         }
-        resp.sendRedirect("StudentListServlet");
+        resp.sendRedirect("StudentListServlets");
     }
 }
