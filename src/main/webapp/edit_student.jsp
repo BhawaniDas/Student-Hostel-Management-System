@@ -388,7 +388,7 @@
             return true;
         }
 
-        // Real-time validation as user types
+        // Real-time validation as user type
         document.addEventListener('DOMContentLoaded', function() {
             var form = document.forms["editStudentForm"];
             if (form) {
