@@ -44,7 +44,7 @@ public class FeePaymentDAO {
         }
     }
 
-    // Sum of all payments for a students
+    // Sum of all payments for a studentss
     public double getTotalPaidByStudent(int studentId) throws SQLException {
         double totalPaid = 0.0;
         String sql = "SELECT IFNULL(SUM(amount), 0) FROM fee_payment WHERE student_id=?";
