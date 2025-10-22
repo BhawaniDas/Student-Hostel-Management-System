@@ -17,7 +17,7 @@ public class AddStudentServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             // Use roll_no as username for the user tables
-            String rollNo = request.getParameter("roll_no"); // 6-digit value
+            String rollNo = request.getParameter("roll_no"); // 6-digit values
             String password = request.getParameter("password");
             String email = request.getParameter("email");
             String name = request.getParameter("name");
